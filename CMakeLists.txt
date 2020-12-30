@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 11)
 add_executable(HW3 main.cpp Code_Skeleton/Part1/Semaphore.cpp Code_Skeleton/Part1/PCQueue.cpp)
 
 
-
 SET(GCC_COVERAGE_COMPILE_FLAGS "-pthread")
 add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
