@@ -13,6 +13,10 @@ Semaphore::Semaphore() {
         cout<<"BUGG: cont_init fail"<<endl;
     }
     this->counter=0;
+    //    ret = pthread_mutex_init(&m, NULL);
+//    if (ret!=0){
+//        cout<<"BUGG: mutex_init fail"<<endl;
+//    }
 }
 
 Semaphore::Semaphore(unsigned int val) {
@@ -23,6 +27,10 @@ Semaphore::Semaphore(unsigned int val) {
         cout<<"BUGG: cont_init fail"<<endl;
     }
     this->counter=val;
+//    ret = pthread_mutex_init(&m, NULL);
+//    if (ret!=0){
+//        cout<<"BUGG: mutex_init fail"<<endl;
+//    }
 }
 
 //signal

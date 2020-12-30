@@ -3,7 +3,7 @@ project(HW3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(HW3 main.cpp Code_Skeleton/Part1/Semaphore.cpp)
+add_executable(HW3 main.cpp Code_Skeleton/Part1/Semaphore.cpp Code_Skeleton/Part1/PCQueue.cpp)
 
 
 
