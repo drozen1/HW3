@@ -23,6 +23,7 @@ public:
 	/** Will not return until the internal thread has exited. */
 	void join()
 	{
+
 	}
 
 	/** Returns the thread_id **/

@@ -17,7 +17,7 @@ private:
 	// TODO
 	pthread_mutex_t m;
     pthread_cond_t cv;
-	int counter;
+    unsigned int counter;
 };
 
 #endif

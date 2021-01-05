@@ -23,12 +23,13 @@ PCQueue<int> my_queue;
 //}
 
 void* my_pop(void* arg){
-    my_queue.pop();
+    int x=my_queue.pop();
+    cout<<x<<endl;
 }
 
 void* my_push(void* arg){
     int x= *((int*)arg);
-
+    cout<<"sucess to push "<< x<<endl;
     my_queue.push(x);
 }
 
@@ -44,32 +45,14 @@ int main()
 //    pthread_join(t2,NULL);
     my_queue= PCQueue<int>();
     int x1=1, x2=2, x3=3;
-    pthread_t c1,c2,c3,c4,p1;
-
-    //sleep(1);
-
+    pthread_t c1,c2,p1;
     pthread_create(&c1,NULL,my_pop,NULL);
-    sleep(1);
     pthread_create(&c2,NULL,my_pop,NULL);
-    sleep(1);
-    pthread_create(&c3,NULL,my_pop,NULL);
-    sleep(1);
-    pthread_create(&c4,NULL,my_pop,NULL);
-    //sleep(1);
-
     pthread_create(&p1,NULL,my_push,&x1);
-    //sleep(1);
     pthread_create(&p1,NULL,my_push,&x2);
-    //sleep(1);
-    pthread_create(&p1,NULL,my_push,&x3);
-    sleep(1);
 
-    pthread_join(p1,NULL);
-    pthread_join(c1,NULL);
-    pthread_join(c2,NULL);
-    pthread_join(c3,NULL);
-    pthread_join(c4,NULL);
-
+    //    pthread_t t1;
+    //pthread_create(&t1,NULL,thread,NULL);
 
     return 0;
 }

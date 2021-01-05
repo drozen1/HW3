@@ -123,6 +123,17 @@ inline void Game::print_board(const char* header) {
 
 }
 
+uint Game::thread_num() const {//Returns the effective number of running threads = min(thread_num, field_height)
+    return this->m_thread_num;
+}
+const vector<double> Game::gen_hist() const{// Returns the generation timing histogram
+    // Note: In your implementation, all m_thread_num threads must write to this structure.
+  return m_gen_hist;
+}
+const vector<double> Game::tile_hist() const{// Returns the tile timing histogram
+    return m_tile_hist; 	 // Shared Timing history for tiles: First (2 * m_gen_num) cells are the calculation durations for tiles in generation 1 and so on.
+
+}
 
 /* Function sketch to use for printing the board. You will need to decide its placement and how exactly 
 	to bring in the field's parameters. 

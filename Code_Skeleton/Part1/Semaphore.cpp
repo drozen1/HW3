@@ -22,7 +22,7 @@ Semaphore::Semaphore() {
 Semaphore::Semaphore(unsigned int val) {
     int ret;
 /* initialize a condition variable to its default value */
-    ret = pthread_cond_init(&this->cv, NULL);
+    ret = pthread_cond_init(&this->cv, nullptr);
     if (ret!=0){
         cout<<"BUGG: cont_init fail"<<endl;
     }

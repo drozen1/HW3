@@ -6,7 +6,7 @@
 #include "Job.h"
 #include "../Part1/PCQueue.hpp"
 #include "utils.hpp"
-#include "myThread.cpp"
+#include "myThread.h"
 /*--------------------------------------------------------------------------------
 								  Species colors
 --------------------------------------------------------------------------------*/
@@ -38,7 +38,7 @@ class Game {
 public:
 
 	Game(game_params);
-	~Game();
+	~Game()=default;
 	void run(); // Runs the game
 	const vector<double> gen_hist() const; // Returns the generation timing histogram  
 	const vector<double> tile_hist() const; // Returns the tile timing histogram
@@ -75,7 +75,6 @@ protected: // All members here are protected, instead of private for testing pur
     uint num_of_row;
     uint counter1;
     uint counter2;
-
 
 
 
