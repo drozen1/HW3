@@ -28,13 +28,13 @@ Game::Game(game_params g){
     this-> print_on=print_on; // A
 }
 
-
 void Game::_init_game() {
-    //start thr bord
+    //start the bord
     // Create game fields - Consider using utils:read_file, utils::split
     vector<string> lines;
     lines=utils::read_lines( my_game_parms.filename);
     num_of_row=lines.size();
+    //the number for threads we need
     if(num_of_row<m_thread_num){
         m_thread_num=num_of_row;
     }
@@ -42,10 +42,44 @@ void Game::_init_game() {
        matrix1.push_back(utils::split(lines[i], ' '));
    }
    matrix2=matrix1;
-   //the number for threads we need
-
-
-	// Create & Start threads
+    int ret;
+/* initialize a condition variable to its default value */
+    ret = pthread_cond_init(&this->cond1, NULL);
+    if (ret!=0){
+        cout<<"BUGG: cond1_init fail"<<endl;
+    }
+    ret = pthread_cond_init(&this->cond2, NULL);
+    if (ret!=0){
+        cout<<"BUGG: cond2_init fail"<<endl;
+    }
+    ret = pthread_mutex_init(&this->mutex, NULL);
+    if (ret!=0){
+        cout<<"BUGG: mutex_init game fail"<<endl;
+    }
+    this->jobQueue= PCQueue<Job>();
+    // Create & Start threads
+   for(uint i=1;i<m_thread_num+1;i++){
+       myThread t= myThread(i,&this->cond1,&this->cond2,&this->mutex,&this->jobQueue);
+       t.start();
+       m_threadpool.push_back(&t);
+   }
+   //calc the num jobs frames and size od frame
+   uint num_of_row_per_job= num_of_row/m_thread_num;
+   uint num_of_row_per_last_job=num_of_row%m_thread_num;
+   //the range is [ ) i.e [0,2) = 0,1
+    this->counter1=0;
+    this->counter2=0;
+    for (int i = 0; i < this->m_thread_num; ++i) {
+        if(i==this->m_thread_num-1){
+            Job j = Job(&matrix1,&matrix2,num_of_row_per_job*i,num_of_row_per_job*(i+1)+num_of_row_per_last_job,
+                        &this->counter1,&this->counter2,this->m_thread_num, false);
+            this->all_jobs.push_back(j);
+        }else{
+            Job j = Job(&matrix1,&matrix2,num_of_row_per_job*i,num_of_row_per_job*(i+1),&this->counter1,
+                        &this->counter2,this->m_thread_num, false);
+            this->all_jobs.push_back(j);
+        }
+    }
 	// Testing of your implementation will presume all threads are started here
 }
 

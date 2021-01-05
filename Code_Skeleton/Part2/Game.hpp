@@ -6,6 +6,7 @@
 #include "Job.h"
 #include "../Part1/PCQueue.hpp"
 #include "utils.hpp"
+#include "myThread.cpp"
 /*--------------------------------------------------------------------------------
 								  Species colors
 --------------------------------------------------------------------------------*/
@@ -66,12 +67,14 @@ protected: // All members here are protected, instead of private for testing pur
     game_params my_game_parms;
     vector<vector<string>> matrix1;
     vector<vector<string>> matrix2;
-    vector<Job> all_jobs;
+    vector<Job> all_jobs; //job* ?
     PCQueue<Job> jobQueue;
     pthread_mutex_t mutex;
     pthread_cond_t cond1;
     pthread_cond_t cond2;
     uint num_of_row;
+    uint counter1;
+    uint counter2;
 
 
 

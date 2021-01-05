@@ -20,13 +20,10 @@ public:
     uint* counter1;
     uint* counter2;
     uint total_jobs;
-    bool interactive_on;
-    bool print_on;
     bool is_exit;
 
     Job( vector<vector<string>>* current,vector<vector<string>>* next, uint start,uint end,
-         uint* counter1,uint* counter2, uint total_jobs, bool interactive_on,
-         bool print_on, bool is_exit) {
+         uint* counter1,uint* counter2, uint total_jobs, bool is_exit) {
         this->current=current;
         this->next=next;
         this->start_row=start;
@@ -34,8 +31,6 @@ public:
         this->counter1=counter1;
         this->counter2=counter2;
         this->total_jobs=total_jobs;
-        this->interactive_on=interactive_on;
-        this->print_on=print_on;
         this->is_exit=is_exit;
     }
 
