@@ -19,10 +19,32 @@ void Game::run() {
 	print_board("Final Board");
 	_destroy_game();
 }
+Game::Game(game_params g){
+    my_game_parms=g;
+     m_gen_num=g.n_gen; 			 // The number of generations to run
+     m_thread_num=g.n_thread; 			 // Effective number of threads = min(thread_num, field_height)
+
+    this->interactive_on=interactive_on; // Controls interactive mode - that means, prints the board as an animation instead of a simple dump to STDOUT
+    this-> print_on=print_on; // A
+}
+
 
 void Game::_init_game() {
+    //start thr bord
+    // Create game fields - Consider using utils:read_file, utils::split
+    vector<string> lines;
+    lines=utils::read_lines( my_game_parms.filename);
+    num_of_row=lines.size();
+    if(num_of_row<m_thread_num){
+        m_thread_num=num_of_row;
+    }
+   for (int i=0;i<num_of_row;i++){
+       matrix1.push_back(utils::split(lines[i], ' '));
+   }
+   matrix2=matrix1;
+   //the number for threads we need
 
-	// Create game fields - Consider using utils:read_file, utils::split
+
 	// Create & Start threads
 	// Testing of your implementation will presume all threads are started here
 }

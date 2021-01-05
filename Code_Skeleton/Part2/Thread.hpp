@@ -2,11 +2,13 @@
 #define __THREAD_H
 
 #include "../Part1/Headers.hpp"
+#include "vector"
 class Thread
 {
 public:
 	Thread(uint thread_id) 
 	{
+        this->m_thread_id=thread_id;
 		// Only places thread_id 
 	} 
 	virtual ~Thread() {} // Does nothing 
@@ -15,6 +17,7 @@ public:
 	// Creates the internal thread via pthread_create 
 	bool start()
 	{
+        pthread_create(&this->m_thread,NULL,this->entry_func,this);
 	}
 
 	/** Will not return until the internal thread has exited. */
