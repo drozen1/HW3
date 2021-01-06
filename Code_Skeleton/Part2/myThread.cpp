@@ -33,13 +33,17 @@ static uint num_of_neighboards(int row_index,int column_index,Job& j,int phase )
     uint counter=0;
     for (int i = -1; i < 2; ++i) {
         for (int k = -1; k < 2; ++k) {
-            if(i!=0 & k!=0){
-                if(retrive_value(row_index+i,column_index+k,j,phase)>0){
-                    counter++;
+            if(i==0 && k==0) {
+                continue;
+            }else{
+                    uint ret = retrive_value(row_index + i, column_index + k, j, phase);
+                    if (ret > 0) {
+                        counter++;
+                    }
                 }
             }
         }
-    }
+
     return counter;
 }
 
@@ -48,14 +52,18 @@ static uint calc_avg(int row_index,int column_index,Job& j,int phase ) {
     uint sum=0;
     for (int i = -1; i < 2; ++i) {
         for (int k = -1; k < 2; ++k) {
-            if(i!=0 & k!=0){
+            if(i==0 && k==0) {
+                continue;
+            }
                 if(retrive_value(row_index+i,column_index+k,j,phase)>0){
                     counter++;
                     sum+=retrive_value(row_index+i,column_index+k,j,phase);
                 }
             }
         }
-    }
+
+    //return sum;
+    /////// TODO: ERROR =0
     return sum/counter;
 }
 
@@ -64,12 +72,15 @@ static uint calc_dominate(int row_index,int column_index,Job& j,int phase ) {
     int count = 0;
     for (int i = -1; i < 2; ++i) {
         for (int k = -1; k < 2; ++k) {
-            if (i != 0 & k != 0) {
+            if (i == 0 && k == 0) {
+                continue;
+            } else {
                 if (retrive_value(row_index + i, column_index + k, j, phase) > 0) {
                     array[count] = retrive_value(row_index + i, column_index + k, j, phase);
                     count++;
                 }
             }
+
         }
     }
     assert(count == 3);
@@ -143,6 +154,8 @@ static void do_phase_two(Job& job) {
             if( retrive_value(i,j,job, 2 )>0){
                 uint ret=calc_avg(i,j,job,2);
                 write_to_matrix(i,j,job,2, ret);
+            }else{
+                write_to_matrix(i,j,job,2, 0);
             }
         }
     }
@@ -153,7 +166,6 @@ void myThread::thread_workload() {
         if (j.is_exit) {
             return;
         }
-
         // phase 1
         do_phase_one(j);
         (*j.counter1)++;
@@ -168,10 +180,7 @@ void myThread::thread_workload() {
             pthread_cond_wait(cond2, m);
         }
         pthread_cond_broadcast(cond2);
-
     }
-
-
 }
 
 

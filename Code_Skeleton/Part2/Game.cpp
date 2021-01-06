@@ -24,8 +24,8 @@ Game::Game(game_params g){
      m_gen_num=g.n_gen; 			 // The number of generations to run
      m_thread_num=g.n_thread; 			 // Effective number of threads = min(thread_num, field_height)
 
-    this->interactive_on=interactive_on; // Controls interactive mode - that means, prints the board as an animation instead of a simple dump to STDOUT
-    this-> print_on=print_on; // A
+    this->interactive_on=g.interactive_on; // Controls interactive mode - that means, prints the board as an animation instead of a simple dump to STDOUT
+    this-> print_on=g.print_on; // A
 }
 
 void Game::_init_game() {
@@ -94,7 +94,7 @@ void Game::_step(uint curr_gen) {
 	    if(this->counter1+this->counter2 == 2*this->m_thread_num){
 	        this->counter1=0;
             this->counter2=0;
-            if(curr_gen==this->m_gen_num){
+            if(curr_gen==this->m_gen_num-1){
                 for(uint i=0;i<m_thread_num;i++){
                     Job j = Job(&matrix1,&matrix2,0,0,&this->counter1,
                                 &this->counter2,this->m_thread_num, true,num_of_row,num_of_columns);
@@ -119,9 +119,6 @@ void Game::_destroy_game(){
     //TODO: valgrind
     for(uint i=0;i<m_thread_num;i++){
         delete(m_threadpool[i]);
-//        myThread* t= new myThread(i,&this->cond1,&this->cond2,&this->mutex,&this->jobQueue);
-//        t->start();
-//        m_threadpool.push_back(t);
     }
 }
 
@@ -139,10 +136,24 @@ inline void Game::print_board(const char* header) {
 		// Print small header if needed
 		if (header != nullptr)
 			cout << "<------------" << header << "------------>" << endl;
-		
-		// TODO: Print the board 
 
-		// Display for GEN_SLEEP_USEC micro-seconds on screen 
+		///print
+
+        cout << u8"╔" << string(u8"═") * this->num_of_columns  << u8"╗" << endl;
+        for (uint i = 0; i < this->num_of_row; ++i) {
+            cout << u8"║";
+            for (uint j = 0; j <this->num_of_columns; ++j) {
+                if (this->matrix1[i][j] > 0)
+                    cout << colors[this->matrix1[i][j] % 7] << u8"█" << RESET;
+                else
+                    cout << u8"░";
+            }
+            cout << u8"║" << endl;
+        }
+        cout << u8"╚" << string(u8"═") *this->num_of_columns << u8"╝" << endl;
+
+
+        // Display for GEN_SLEEP_USEC micro-seconds on screen
 		if(interactive_on)
 			usleep(GEN_SLEEP_USEC);
 	}
@@ -162,21 +173,10 @@ const vector<double> Game::tile_hist() const{// Returns the tile timing histogra
 }
 
 /* Function sketch to use for printing the board. You will need to decide its placement and how exactly 
-	to bring in the field's parameters. 
+	to bring in the field's parameters.
+ */
 
-		cout << u8"╔" << string(u8"═") * field_width << u8"╗" << endl;
-		for (uint i = 0; i < field_height ++i) {
-			cout << u8"║";
-			for (uint j = 0; j < field_width; ++j) {
-                if (field[i][j] > 0)
-                    cout << colors[field[i][j] % 7] << u8"█" << RESET;
-                else
-                    cout << u8"░";
-			}
-			cout << u8"║" << endl;
-		}
-		cout << u8"╚" << string(u8"═") * field_width << u8"╝" << endl;
-*/ 
+
 
 
 
