@@ -14,15 +14,15 @@
 
 class Job {
 public:
-    vector<vector<string>>* current;
-    vector<vector<string>>* next;
+    vector<vector<int>>* current;
+    vector<vector<int>>* next;
     uint start_row, end_row;
     uint* counter1;
     uint* counter2;
     uint total_jobs;
     bool is_exit;
 
-    Job( vector<vector<string>>* current,vector<vector<string>>* next, uint start,uint end,
+    Job( vector<vector<int>>* current,vector<vector<int>>* next, uint start,uint end,
          uint* counter1,uint* counter2, uint total_jobs, bool is_exit) {
         this->current=current;
         this->next=next;

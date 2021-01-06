@@ -59,9 +59,10 @@ void Game::_init_game() {
     this->jobQueue= PCQueue<Job>();
     // Create & Start threads
    for(uint i=1;i<m_thread_num+1;i++){
-       myThread t= myThread(i,&this->cond1,&this->cond2,&this->mutex,&this->jobQueue);
-       t.start();
-       m_threadpool.push_back(&t);
+       myThread* t= new myThread(i,&this->cond1,&this->cond2,&this->mutex,&this->jobQueue);
+       //TODO: delete all threads
+       t->start();
+       m_threadpool.push_back(t);
    }
    //calc the num jobs frames and size od frame
    uint num_of_row_per_job= num_of_row/m_thread_num;

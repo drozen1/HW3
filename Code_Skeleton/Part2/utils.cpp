@@ -19,14 +19,15 @@ vector<string> utils::read_lines(const string& filename) {
 	return lines;
 }
 
-vector<string> utils::split(const string& s, char delimiter)
+vector<int> utils::split(const string& s, char delimiter)
 {
-	vector<string> tokens;
+	vector<int> tokens;
 	string token;
 	istringstream token_stream(s);
 	while (getline(token_stream, token, delimiter))
 	{
-		tokens.push_back(token);
+		//tokens.push_back(token);
+        tokens.push_back(std::stoi(token));
 	}
 	return tokens;
 }

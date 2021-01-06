@@ -65,8 +65,8 @@ protected: // All members here are protected, instead of private for testing pur
 
 	// TODO: Add in your variables and synchronization primitives
     game_params my_game_parms;
-    vector<vector<string>> matrix1;
-    vector<vector<string>> matrix2;
+    vector<vector<int>> matrix1;
+    vector<vector<int>> matrix2;
     vector<Job> all_jobs; //job* ?
     PCQueue<Job> jobQueue;
     pthread_mutex_t mutex;
