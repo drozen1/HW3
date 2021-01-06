@@ -23,7 +23,7 @@ public:
 	/** Will not return until the internal thread has exited. */
 	void join()
 	{
-
+        pthread_join(this->m_thread,NULL);
 	}
 
 	/** Returns the thread_id **/

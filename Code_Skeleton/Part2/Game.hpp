@@ -73,6 +73,7 @@ protected: // All members here are protected, instead of private for testing pur
     pthread_cond_t cond1;
     pthread_cond_t cond2;
     uint num_of_row;
+    uint num_of_columns;
     uint counter1;
     uint counter2;
 

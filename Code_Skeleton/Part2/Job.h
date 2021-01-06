@@ -21,9 +21,11 @@ public:
     uint* counter2;
     uint total_jobs;
     bool is_exit;
+    uint num_of_rows;
+    uint num_of_columns;
 
     Job( vector<vector<int>>* current,vector<vector<int>>* next, uint start,uint end,
-         uint* counter1,uint* counter2, uint total_jobs, bool is_exit) {
+         uint* counter1,uint* counter2, uint total_jobs, bool is_exit,uint num_of_row,uint num_of_columns) {
         this->current=current;
         this->next=next;
         this->start_row=start;
@@ -32,6 +34,8 @@ public:
         this->counter2=counter2;
         this->total_jobs=total_jobs;
         this->is_exit=is_exit;
+        this->num_of_columns=num_of_columns;
+        this->num_of_rows=num_of_row;
     }
 
 };

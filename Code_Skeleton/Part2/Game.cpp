@@ -41,6 +41,7 @@ void Game::_init_game() {
    for (int i=0;i<num_of_row;i++){
        matrix1.push_back(utils::split(lines[i], ' '));
    }
+   num_of_columns= matrix1[0].size();
    matrix2=matrix1;
     int ret;
 /* initialize a condition variable to its default value */
@@ -60,7 +61,6 @@ void Game::_init_game() {
     // Create & Start threads
    for(uint i=1;i<m_thread_num+1;i++){
        myThread* t= new myThread(i,&this->cond1,&this->cond2,&this->mutex,&this->jobQueue);
-       //TODO: delete all threads
        t->start();
        m_threadpool.push_back(t);
    }
@@ -73,11 +73,11 @@ void Game::_init_game() {
     for (int i = 0; i < this->m_thread_num; ++i) {
         if(i==this->m_thread_num-1){
             Job j = Job(&matrix1,&matrix2,num_of_row_per_job*i,num_of_row_per_job*(i+1)+num_of_row_per_last_job,
-                        &this->counter1,&this->counter2,this->m_thread_num, false);
+                        &this->counter1,&this->counter2,this->m_thread_num, false,num_of_row,num_of_columns);
             this->all_jobs.push_back(j);
         }else{
             Job j = Job(&matrix1,&matrix2,num_of_row_per_job*i,num_of_row_per_job*(i+1),&this->counter1,
-                        &this->counter2,this->m_thread_num, false);
+                        &this->counter2,this->m_thread_num, false,num_of_row,num_of_columns);
             this->all_jobs.push_back(j);
         }
     }
@@ -86,7 +86,24 @@ void Game::_init_game() {
 
 void Game::_step(uint curr_gen) {
 	// Push jobs to queue
-	// Wait for the workers to finish calculating 
+    for (int i = 0; i < this->all_jobs.size(); ++i) {
+        this->jobQueue.push(all_jobs[i]);
+    }
+	// Wait for the workers to finish calculating
+	while(true){
+	    if(this->counter1+this->counter2 == 2*this->m_thread_num){
+	        this->counter1=0;
+            this->counter2=0;
+            if(curr_gen==this->m_gen_num){
+                for(uint i=0;i<m_thread_num;i++){
+                    Job j = Job(&matrix1,&matrix2,0,0,&this->counter1,
+                                &this->counter2,this->m_thread_num, true,num_of_row,num_of_columns);
+                    this->jobQueue.push(j);
+                }
+            }
+            return;
+	    }
+	}
 	// Swap pointers between current and next field 
 	// NOTE: Threads must not be started here - doing so will lead to a heavy penalty in your grade 
 }
@@ -95,8 +112,16 @@ void Game::_destroy_game(){
 	// Destroys board and frees all threads and resources 
 	// Not implemented in the Game's destructor for testing purposes. 
 	// All threads must be joined here
+
 	for (uint i = 0; i < m_thread_num; ++i) {
         m_threadpool[i]->join();
+    }
+    //TODO: valgrind
+    for(uint i=0;i<m_thread_num;i++){
+        delete(m_threadpool[i]);
+//        myThread* t= new myThread(i,&this->cond1,&this->cond2,&this->mutex,&this->jobQueue);
+//        t->start();
+//        m_threadpool.push_back(t);
     }
 }
 
