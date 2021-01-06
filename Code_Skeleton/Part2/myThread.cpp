@@ -168,18 +168,31 @@ void myThread::thread_workload() {
         }
         // phase 1
         do_phase_one(j);
+
+        pthread_mutex_lock(m);
         (*j.counter1)++;
         while (*j.counter1 != j.total_jobs) {
             pthread_cond_wait(cond1, m);
         }
         pthread_cond_broadcast(cond1);
+        pthread_mutex_unlock(m);
+
         // phase 2
         do_phase_two( j);
+        pthread_mutex_lock(m);
         (*j.counter2)++;
+        if(*j.counter2 == j.total_jobs){
+            pthread_cond_broadcast(cond2);
+        }
         while (*j.counter2 != j.total_jobs) {
             pthread_cond_wait(cond2, m);
         }
-        pthread_cond_broadcast(cond2);
+        (*j.counter1)--;
+        if(*j.counter1==0){
+            //or signal
+            pthread_cond_signal(cond2);
+        }
+        pthread_mutex_unlock(m);
     }
 }
 

@@ -90,20 +90,23 @@ void Game::_step(uint curr_gen) {
         this->jobQueue.push(all_jobs[i]);
     }
 	// Wait for the workers to finish calculating
-	while(true){
-	    if(this->counter1+this->counter2 == 2*this->m_thread_num){
-	        this->counter1=0;
-            this->counter2=0;
-            if(curr_gen==this->m_gen_num-1){
-                for(uint i=0;i<m_thread_num;i++){
-                    Job j = Job(&matrix1,&matrix2,0,0,&this->counter1,
-                                &this->counter2,this->m_thread_num, true,num_of_row,num_of_columns);
-                    this->jobQueue.push(j);
-                }
+    pthread_mutex_lock(&this->mutex);
+    while (this->counter2 != this->m_thread_num && this->counter1!=0) {
+        pthread_cond_wait(&cond2, &mutex);
+    }
+    this->counter2=0;
+    pthread_mutex_unlock(&this->mutex);
+
+    if(curr_gen==this->m_gen_num-1){
+        for(uint i=0;i<m_thread_num;i++){
+            Job j = Job(&matrix1,&matrix2,0,0,&this->counter1,
+                        &this->counter2,this->m_thread_num, true,num_of_row,num_of_columns);
+            this->jobQueue.push(j);
+        }
             }
             return;
-	    }
-	}
+//	    }
+//	}
 	// Swap pointers between current and next field 
 	// NOTE: Threads must not be started here - doing so will lead to a heavy penalty in your grade 
 }
