@@ -1,6 +1,5 @@
 
 #include "myThread.h"
-#include <set>
 myThread::myThread(uint threadId, pthread_cond_t *cond1, pthread_cond_t *cond2, pthread_mutex_t *m,
                    PCQueue<Job> *jobQueue) : Thread(threadId) {
     this->cond1 = cond1;
@@ -138,7 +137,16 @@ static void do_phase_one(Job& job){
         }
     }
 }
-
+static void do_phase_two(Job& job) {
+    for (int i = job.start_row; i < job.end_row; ++i) {
+        for (int j = 0; j < job.num_of_columns; ++j) {
+            if( retrive_value(i,j,job, 2 )>0){
+                uint ret=calc_avg(i,j,job,2);
+                write_to_matrix(i,j,job,2, ret);
+            }
+        }
+    }
+}
 void myThread::thread_workload() {
     while (true) {
         Job j = jobQueue->pop();
@@ -153,7 +161,8 @@ void myThread::thread_workload() {
             pthread_cond_wait(cond1, m);
         }
         pthread_cond_broadcast(cond1);
-        ///TODO: phase 2
+        // phase 2
+        do_phase_two( j);
         (*j.counter2)++;
         while (*j.counter2 != j.total_jobs) {
             pthread_cond_wait(cond2, m);
