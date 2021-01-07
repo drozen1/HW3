@@ -14,7 +14,7 @@ myThread::myThread(uint threadId, pthread_cond_t *cond1, pthread_cond_t *cond2, 
  * phase 1= current matrix1
  * phase 2 = next matrix2
  */
-static uint retrive_value(int row_index,int column_index,Job& j, int phase ) {
+static uint retrive_value(uint row_index,uint column_index,Job& j, int phase ) {
     if (row_index < 0 || row_index >= j.num_of_rows ||
         column_index < 0 || column_index >= j.num_of_columns) {
         return 0;
@@ -29,7 +29,7 @@ static uint retrive_value(int row_index,int column_index,Job& j, int phase ) {
     return line[column_index];
 }
 
-static uint num_of_neighboards(int row_index,int column_index,Job& j,int phase ) {
+static uint num_of_neighboards(uint row_index,uint column_index,Job& j,int phase ) {
     uint counter=0;
     for (int i = -1; i < 2; ++i) {
         for (int k = -1; k < 2; ++k) {
@@ -47,7 +47,7 @@ static uint num_of_neighboards(int row_index,int column_index,Job& j,int phase )
     return counter;
 }
 
-static uint calc_avg(int row_index,int column_index,Job& j,int phase ) {
+static uint calc_avg(uint row_index,uint column_index,Job& j,int phase ) {
     uint counter=0;
     uint sum=0;
     for (int i = -1; i < 2; ++i) {
@@ -67,8 +67,8 @@ static uint calc_avg(int row_index,int column_index,Job& j,int phase ) {
     return sum/counter;
 }
 
-static uint calc_dominate(int row_index,int column_index,Job& j,int phase ) {
-    int array[3] = {0, 0, 0};
+static uint calc_dominate(uint row_index,uint column_index,Job& j,int phase ) {
+    uint array[3] = {0, 0, 0};
     int count = 0;
     for (int i = -1; i < 2; ++i) {
         for (int k = -1; k < 2; ++k) {
@@ -115,7 +115,7 @@ static uint calc_dominate(int row_index,int column_index,Job& j,int phase ) {
     }
 }
 
-static void write_to_matrix(int row_index,int column_index,Job& j,int phase,uint value){
+static void write_to_matrix(uint row_index,uint column_index,Job& j,int phase,uint value){
     if(phase==1) {
         (*j.next)[row_index][column_index] = value;
     }
@@ -125,8 +125,8 @@ static void write_to_matrix(int row_index,int column_index,Job& j,int phase,uint
 }
 
 static void do_phase_one(Job& job){
-    for (int i = job.start_row; i < job.end_row; ++i) {
-        for (int j = 0; j < job.num_of_columns; ++j) {
+    for (uint i = job.start_row; i < job.end_row; ++i) {
+        for (uint j = 0; j < job.num_of_columns; ++j) {
             uint num_of_live_neighbors= num_of_neighboards(i,j,job,1);
             if(num_of_live_neighbors==3 && retrive_value(i,j,job,1)==0){
                 /////birth
@@ -149,8 +149,8 @@ static void do_phase_one(Job& job){
     }
 }
 static void do_phase_two(Job& job) {
-    for (int i = job.start_row; i < job.end_row; ++i) {
-        for (int j = 0; j < job.num_of_columns; ++j) {
+    for (uint i = job.start_row; i < job.end_row; ++i) {
+        for (uint j = 0; j < job.num_of_columns; ++j) {
             if( retrive_value(i,j,job, 2 )>0){
                 uint ret=calc_avg(i,j,job,2);
                 write_to_matrix(i,j,job,2, ret);

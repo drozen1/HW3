@@ -3,6 +3,7 @@
 
 #include "../Part1/Headers.hpp"
 #include "vector"
+
 class Thread
 {
 public:
@@ -17,7 +18,11 @@ public:
 	// Creates the internal thread via pthread_create 
 	bool start()
 	{
-        pthread_create(&this->m_thread,NULL,this->entry_func,this);
+       int ret= pthread_create(&this->m_thread,NULL,this->entry_func,this);
+        if(ret==0){
+            return true;
+        }
+        return false;
 	}
 
 	/** Will not return until the internal thread has exited. */
