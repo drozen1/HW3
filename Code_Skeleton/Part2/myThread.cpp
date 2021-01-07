@@ -52,9 +52,9 @@ static uint calc_avg(int row_index,int column_index,Job& j,int phase ) {
     uint sum=0;
     for (int i = -1; i < 2; ++i) {
         for (int k = -1; k < 2; ++k) {
-            if(i==0 && k==0) {
-                continue;
-            }
+//            if(i==0 && k==0) {
+//                continue;
+//            }
                 if(retrive_value(row_index+i,column_index+k,j,phase)>0){
                     counter++;
                     sum+=retrive_value(row_index+i,column_index+k,j,phase);
