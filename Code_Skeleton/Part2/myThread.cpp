@@ -50,20 +50,16 @@ static uint num_of_neighboards(uint row_index,uint column_index,Job& j,int phase
 static uint calc_avg(uint row_index,uint column_index,Job& j,int phase ) {
     uint counter=0;
     uint sum=0;
+    //TODO: remove this line
+    assert(retrive_value(row_index,column_index,j,phase)>0);
     for (int i = -1; i < 2; ++i) {
         for (int k = -1; k < 2; ++k) {
-//            if(i==0 && k==0) {
-//                assert(retrive_value(row_index,column_index,j,phase)>0);
-//            }
                 if(retrive_value(row_index+i,column_index+k,j,phase)>0){
                     counter++;
                     sum+=retrive_value(row_index+i,column_index+k,j,phase);
                 }
             }
         }
-
-    //return sum;
-    /////// TODO: ERROR =0
     return round(double(sum)/double(counter));
 }
 
