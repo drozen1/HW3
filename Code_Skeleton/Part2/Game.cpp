@@ -38,7 +38,7 @@ void Game::_init_game() {
     if(num_of_row<m_thread_num){
         m_thread_num=num_of_row;
     }
-   for (int i=0;i<num_of_row;i++){
+   for (uint i=0;i<num_of_row;i++){
        matrix1.push_back(utils::split(lines[i], ' '));
    }
    num_of_columns= matrix1[0].size();
@@ -70,7 +70,7 @@ void Game::_init_game() {
    //the range is [ ) i.e [0,2) = 0,1
     this->counter1=0;
     this->counter2=0;
-    for (int i = 0; i < this->m_thread_num; ++i) {
+    for (uint i = 0; i < this->m_thread_num; ++i) {
         if(i==this->m_thread_num-1){
             Job j = Job(&matrix1,&matrix2,num_of_row_per_job*i,num_of_row_per_job*(i+1)+num_of_row_per_last_job,
                         &this->counter1,&this->counter2,this->m_thread_num, false,num_of_row,num_of_columns);
@@ -86,7 +86,7 @@ void Game::_init_game() {
 
 void Game::_step(uint curr_gen) {
 	// Push jobs to queue
-    for (int i = 0; i < this->all_jobs.size(); ++i) {
+    for (uint i = 0; i < this->all_jobs.size(); ++i) {
         this->jobQueue.push(all_jobs[i]);
     }
 	// Wait for the workers to finish calculating
