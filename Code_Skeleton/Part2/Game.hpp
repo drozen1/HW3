@@ -76,6 +76,7 @@ protected: // All members here are protected, instead of private for testing pur
     uint num_of_columns;
     uint counter1;
     uint counter2;
+    bool enter;
 
 
 

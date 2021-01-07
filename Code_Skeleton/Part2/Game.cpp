@@ -29,6 +29,7 @@ Game::Game(game_params g){
 }
 
 void Game::_init_game() {
+     enter=false;
     //start the bord
     // Create game fields - Consider using utils:read_file, utils::split
     vector<string> lines;
@@ -73,11 +74,11 @@ void Game::_init_game() {
     for (uint i = 0; i < this->m_thread_num; ++i) {
         if(i==this->m_thread_num-1){
             Job j = Job(&matrix1,&matrix2,num_of_row_per_job*i,num_of_row_per_job*(i+1)+num_of_row_per_last_job,
-                        &this->counter1,&this->counter2,this->m_thread_num, false,num_of_row,num_of_columns);
+                        &this->counter1,&this->counter2,this->m_thread_num, false,num_of_row,num_of_columns,&enter);
             this->all_jobs.push_back(j);
         }else{
             Job j = Job(&matrix1,&matrix2,num_of_row_per_job*i,num_of_row_per_job*(i+1),&this->counter1,
-                        &this->counter2,this->m_thread_num, false,num_of_row,num_of_columns);
+                        &this->counter2,this->m_thread_num, false,num_of_row,num_of_columns,&enter);
             this->all_jobs.push_back(j);
         }
     }
@@ -91,16 +92,18 @@ void Game::_step(uint curr_gen) {
     }
 	// Wait for the workers to finish calculating
     pthread_mutex_lock(&this->mutex);
-    while (this->counter2 != this->m_thread_num && this->counter1!=0) {
+    while (!enter) {
         pthread_cond_wait(&cond2, &mutex);
     }
+    assert(counter1==0);
     this->counter2=0;
+    enter=false;
     pthread_mutex_unlock(&this->mutex);
 
     if(curr_gen==this->m_gen_num-1){
         for(uint i=0;i<m_thread_num;i++){
             Job j = Job(&matrix1,&matrix2,0,0,&this->counter1,
-                        &this->counter2,this->m_thread_num, true,num_of_row,num_of_columns);
+                        &this->counter2,this->m_thread_num, true,num_of_row,num_of_columns,&enter);
             this->jobQueue.push(j);
         }
             }

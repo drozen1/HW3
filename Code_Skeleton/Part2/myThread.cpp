@@ -167,10 +167,12 @@ void myThread::thread_workload() {
 
         pthread_mutex_lock(m);
         (*j.counter1)++;
+        if(*j.counter1 == j.total_jobs){
+            pthread_cond_broadcast(cond1);
+        }
         while (*j.counter1 != j.total_jobs) {
             pthread_cond_wait(cond1, m);
         }
-        pthread_cond_broadcast(cond1);
         pthread_mutex_unlock(m);
 
         // phase 2
@@ -186,6 +188,7 @@ void myThread::thread_workload() {
         (*j.counter1)--;
         if(*j.counter1==0){
             //or signal
+            *j.enter=true;
             pthread_cond_signal(cond2);
         }
         pthread_mutex_unlock(m);
