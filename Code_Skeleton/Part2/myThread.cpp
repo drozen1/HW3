@@ -20,13 +20,9 @@ static uint retrive_value(uint row_index,uint column_index,Job& j, int phase ) {
         return 0;
     }
     if (phase == 1) {
-        vector<vector<int>> matrix= *j.current;
-        vector<int> line = matrix[row_index];
-        return line[column_index];
+        return (*j.current)[row_index][column_index] ;
     }
-    vector<vector<int>> matrix= *j.next;
-    vector<int> line = matrix[row_index];
-    return line[column_index];
+    return (*j.next)[row_index][column_index] ;
 }
 
 static uint num_of_neighboards(uint row_index,uint column_index,Job& j,int phase ) {
@@ -71,8 +67,9 @@ static uint calc_dominate(uint row_index,uint column_index,Job& j,int phase ) {
             if (i == 0 && k == 0) {
                 continue;
             } else {
-                if (retrive_value(row_index + i, column_index + k, j, phase) > 0) {
-                    array[count] = retrive_value(row_index + i, column_index + k, j, phase);
+                uint ret=retrive_value(row_index + i, column_index + k, j, phase);
+                if (ret > 0) {
+                    array[count] = ret;
                     count++;
                 }
             }
@@ -124,16 +121,16 @@ static void do_phase_one(Job& job){
     for (uint i = job.start_row; i < job.end_row; ++i) {
         for (uint j = 0; j < job.num_of_columns; ++j) {
             uint num_of_live_neighbors= num_of_neighboards(i,j,job,1);
-            if(num_of_live_neighbors==3 && retrive_value(i,j,job,1)==0){
+            uint ret=retrive_value(i,j,job,1);
+            if(num_of_live_neighbors==3 && ret==0){
                 /////birth
-                uint ret= calc_dominate(i,j,job,1);
-                write_to_matrix(i,j,job,1, ret);
+                uint ret1= calc_dominate(i,j,job,1);
+                write_to_matrix(i,j,job,1, ret1);
             }else {
                 if ((num_of_live_neighbors == 2 || num_of_live_neighbors == 3)
                     && retrive_value(i, j, job, 1) != 0) {
                     /////survive
                     // put the value from current to next
-                    uint ret=retrive_value(i, j, job, 1);
                     write_to_matrix(i,j,job,1, ret);
                 }else{
                     ///DIE
