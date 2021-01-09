@@ -20,10 +20,9 @@ void Game::run() {
 	_destroy_game();
 }
 Game::Game(game_params g){
-    my_game_parms=g;
+     my_game_parms=g;
      m_gen_num=g.n_gen; 			 // The number of generations to run
      m_thread_num=g.n_thread; 			 // Effective number of threads = min(thread_num, field_height)
-
     this->interactive_on=g.interactive_on; // Controls interactive mode - that means, prints the board as an animation instead of a simple dump to STDOUT
     this-> print_on=g.print_on; // A
 }
@@ -61,7 +60,8 @@ void Game::_init_game() {
     this->jobQueue= PCQueue<Job>();
     // Create & Start threads
    for(uint i=1;i<m_thread_num+1;i++){
-       myThread* t= new myThread(i,&this->cond1,&this->cond2,&this->mutex,&this->jobQueue);
+
+       myThread* t= new myThread(i,&this->cond1,&this->cond2,&this->mutex,&this->jobQueue,&this->m_tile_hist);
        t->start();
        m_threadpool.push_back(t);
    }

@@ -1,11 +1,12 @@
 
 #include "myThread.h"
 myThread::myThread(uint threadId, pthread_cond_t *cond1, pthread_cond_t *cond2, pthread_mutex_t *m,
-                   PCQueue<Job> *jobQueue) : Thread(threadId) {
+                   PCQueue<Job> *jobQueue,vector<double>* m_tile_hist) : Thread(threadId) {
     this->cond1 = cond1;
     this->cond2 = cond2;
     this->m = m;
     this->jobQueue = jobQueue;
+    this->m_tile_hist=m_tile_hist;
 }
 /**
  *
@@ -67,9 +68,8 @@ static uint calc_dominate(uint row_index,uint column_index,Job& j,int phase ) {
             if (i == 0 && k == 0) {
                 continue;
             } else {
-                uint ret=retrive_value(row_index + i, column_index + k, j, phase);
-                if (ret > 0) {
-                    array[count] = ret;
+                if (retrive_value(row_index + i, column_index + k, j, phase) > 0) {
+                    array[count] = retrive_value(row_index + i, column_index + k, j, phase);
                     count++;
                 }
             }
@@ -121,16 +121,16 @@ static void do_phase_one(Job& job){
     for (uint i = job.start_row; i < job.end_row; ++i) {
         for (uint j = 0; j < job.num_of_columns; ++j) {
             uint num_of_live_neighbors= num_of_neighboards(i,j,job,1);
-            uint ret=retrive_value(i,j,job,1);
-            if(num_of_live_neighbors==3 && ret==0){
+            if(num_of_live_neighbors==3 && retrive_value(i,j,job,1)==0){
                 /////birth
-                uint ret1= calc_dominate(i,j,job,1);
-                write_to_matrix(i,j,job,1, ret1);
+                uint ret= calc_dominate(i,j,job,1);
+                write_to_matrix(i,j,job,1, ret);
             }else {
                 if ((num_of_live_neighbors == 2 || num_of_live_neighbors == 3)
                     && retrive_value(i, j, job, 1) != 0) {
                     /////survive
                     // put the value from current to next
+                    uint ret=retrive_value(i, j, job, 1);
                     write_to_matrix(i,j,job,1, ret);
                 }else{
                     ///DIE
@@ -159,10 +159,12 @@ void myThread::thread_workload() {
         if (j.is_exit) {
             return;
         }
+        auto gen_start1 = std::chrono::system_clock::now();
         // phase 1
         do_phase_one(j);
-
+        auto gen_end1 = std::chrono::system_clock::now();
         pthread_mutex_lock(m);
+        this->m_tile_hist->push_back((double)std::chrono::duration_cast<std::chrono::microseconds>(gen_end1 - gen_start1).count());
         (*j.counter1)++;
         if(*j.counter1 == j.total_jobs){
             pthread_cond_broadcast(cond1);
@@ -173,8 +175,11 @@ void myThread::thread_workload() {
         pthread_mutex_unlock(m);
 
         // phase 2
+        auto gen_start2 = std::chrono::system_clock::now();
         do_phase_two( j);
+        auto gen_end2 = std::chrono::system_clock::now();
         pthread_mutex_lock(m);
+        this->m_tile_hist->push_back((double)std::chrono::duration_cast<std::chrono::microseconds>(gen_end2 - gen_start2).count());
         (*j.counter2)++;
         if(*j.counter2 == j.total_jobs){
             pthread_cond_broadcast(cond2);

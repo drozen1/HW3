@@ -13,9 +13,10 @@ class myThread : public Thread {
     pthread_cond_t *cond2;
     pthread_mutex_t *m;
     PCQueue <Job> *jobQueue;
+    vector<double>* m_tile_hist;
 public:
     myThread(uint threadId, pthread_cond_t *cond1, pthread_cond_t *cond2, pthread_mutex_t *m,
-             PCQueue<Job> *jobQueue);
+             PCQueue<Job> *jobQueue, vector<double>* m_tile_hist);
     void thread_workload() override;
 };
 
