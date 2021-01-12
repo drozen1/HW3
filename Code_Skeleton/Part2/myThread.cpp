@@ -48,7 +48,7 @@ static uint calc_avg(uint row_index,uint column_index,Job& j,int phase ) {
     uint counter=0;
     uint sum=0;
     //TODO: remove this line
-    assert(retrive_value(row_index,column_index,j,phase)>0);
+    //assert(retrive_value(row_index,column_index,j,phase)>0);
     for (int i = -1; i < 2; ++i) {
         for (int k = -1; k < 2; ++k) {
                 if(retrive_value(row_index+i,column_index+k,j,phase)>0){

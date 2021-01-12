@@ -64,7 +64,7 @@ protected: // All members here are protected, instead of private for testing pur
 	bool interactive_on; // Controls interactive mode - that means, prints the board as an animation instead of a simple dump to STDOUT 
 	bool print_on; // Allows the printing of the board. Turn this off when you are checking performance (Dry 3, last question)
 
-	// TODO: Add in your variables and synchronization primitives
+
     game_params my_game_parms;
     vector<vector<int>> matrix1;
     vector<vector<int>> matrix2;
